@@ -6,7 +6,7 @@
 
 An AI-first, privacy respecting, integrated diagnostic and development suite built the Unix way, through small tools that can be orchestrated together.
 
- * **[Tmux Talkers](#the-tmux-talkers)**: Rebranded as [sidechat](https://github.com/day50-dev/sidechat)
+ * **Tmux Talkers**: Rebranded as [sidechat](https://github.com/day50-dev/sidechat)
  * **[Shell Snoopers](#the-shell-snoopers)**: Tiny tools for shining up your shell
  * **[Xorg Xtractors](#the-xorg-xtractors)**: LLM interception and injection in your Xorg
 
