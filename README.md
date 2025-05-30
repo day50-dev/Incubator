@@ -1,7 +1,7 @@
 <p align="center">
-  <H3>LLM Incubator</H3>
+  <img src=https://github.com/user-attachments/assets/22298671-aa0d-48c6-b7da-35c169f89636>
   <br/>
-  <strong>Hackable HCI tools to fix all those AI bugs</strong>
+  <strong>Early-stage Hackable HCI tools</strong>
 </p>
 
 An AI-first, privacy respecting, integrated diagnostic and development suite built the Unix way, through small tools that can be orchestrated together.
