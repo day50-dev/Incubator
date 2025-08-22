@@ -27,7 +27,7 @@ Moved to [ESChatch](https://github.com/day50-dev/ESChatch).
 This is a fairly simple script you can just add to your `.{shell}sh`:
 ```bash
 function tabchat() {
-    bt html | markitdown | llm "Here is a document I'm going to ask you about" | sd
+    bt html $(bt active | cut -d ' ' -f 1) | markitdown | llm "Here is a document I'm going to ask you about" | sd
     llm chat -c | sd
 }
 ```
