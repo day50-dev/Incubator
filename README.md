@@ -33,8 +33,7 @@ function tabchat() {
 ```
 
 This uses [brotab](https://github.com/balta2ar/brotab) to get the html from the  active tab (bt html) and then uses [markitdown](https://github.com/microsoft/markitdown) to convert it into ingestable markdown for an llm, then it uses [simonw's llm](https://github.com/simonw/llm) to add it to a context window and [streamdown](https://github.com/day50-dev/Streamdown) to format the markdowne.
-
-![tabchat](https://github.com/user-attachments/assets/b0cad9b9-14da-4c40-9068-86b68a48483c)
+![tabchat](https://github.com/user-attachments/assets/db5b1960-f0c3-4796-b9c5-fb5650fd859c)
 
 ### WTF
 A tool designed to read a directory of files, describe their content, categorize their purposes and answer basic questions. Example!
