@@ -22,6 +22,18 @@ Moved to [Zummoner](https://github.com/day50-dev/Zummoner).
 
 Moved to [ESChatch](https://github.com/day50-dev/ESChatch).
 
+### Tabchat
+
+This is a fairly simple script you can just add to your `.{shell}sh`:
+```bash
+function tabchat() {
+    bt html | markitdown | llm "Here is a document I'm going to ask you about" | sd
+    llm chat -c | sd
+}
+```
+
+This uses [brotab](https://github.com/balta2ar/brotab) to get the html from the  active tab (bt html) and then uses [markitdown](https://github.com/microsoft/markitdown) to convert it into ingestable markdown for an llm, then it uses [simonw's llm](https://github.com/simonw/llm) to add it to a context window and [streamdown](https://github.com/day50-dev/Streamdown) to format the markdowne.
+
 ### WTF
 A tool designed to read a directory of files, describe their content, categorize their purposes and answer basic questions. Example!
 
