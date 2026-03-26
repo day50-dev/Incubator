@@ -23,6 +23,7 @@ function show-llm {
 
 function change-server {
   local _path="${_this_path}servers"
+  local chosen
 
   if [[ -n "$1" ]]; then
     chosen="$1"
@@ -33,9 +34,9 @@ function change-server {
   fi
 
   if [[ -n "$chosen" ]]; then
-    echo "Setting to $chosen"
     if [[ "$chosen" != "$LLC_SERVER" ]]; then
-      echo "Resetting keyfile link"
+      echo "Resetting Key File\n"
+      change-key "" ""
       touch "$_path"
       { 
           echo "$chosen"; 
@@ -46,11 +47,14 @@ function change-server {
       sed -i 's|^LLC_SERVER=[^ ]*$|LLC_SERVER='$chosen'|g' "$_secrets"
     fi
   else
-    echo "Fine! Server unchanged!"
+    echo "Fine! Server unchanged!\n"
   fi
+  show-llm
 }
 
 function change-model {
+  local chosen
+
   if [[ -n "$1" ]]; then
     chosen="$1"
   else
@@ -58,13 +62,17 @@ function change-model {
   fi
 
   if [[ -n "$chosen" ]]; then
-    echo "Setting to $chosen"
     export LLC_MODEL="$chosen"
     sed -i 's|^LLC_MODEL=[^ ]*$|LLC_MODEL='$chosen'|g' "$_secrets"
+  else
+    echo "Fine! Model unchanged!\n"
   fi
+  show-llm
 }
 
 function change-key {
+  local chosen
+
   if [[ $# -gt 0 ]]; then
     chosen="${1:-/dev/null}"
   else
@@ -78,13 +86,13 @@ function change-key {
       return 1
     fi
 
-    echo "Setting key to $chosen"
     export LLC_KEY_FILE="$chosen"
     export LLC_KEY="$(< $LLC_KEY_FILE )"
     sed -i 's|^LLC_KEY_FILE=[^ ]*$|LLC_KEY_FILE='$chosen'|g' "$_secrets"
   else
-    echo "Fine! Key unchanged!"
+    echo "Fine! Key unchanged!\n"
   fi
+  [[ $# -lt 2 ]] && show-llm
 }
 
 function llc() {
@@ -101,5 +109,5 @@ $LLC_MODEL" -k "$LLC_KEY"
   fi
   convo="$(mktemp)"
   echo "Conversation: $convo" > /dev/stderr
-  llcat -c $convo -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@" 2> >(jq '.' >&2) | sd
+  llcat -c "$convo" -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@" 2> >(jq '.' >&2) | sd
 }
