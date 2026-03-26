@@ -22,27 +22,27 @@ function show-llm {
 }
 
 function change-server {
-  local _path="${_this_path}servers"
+  local sfile="${_this_path}servers"
   local chosen
 
   if [[ -n "$1" ]]; then
     chosen="$1"
-  elif [[ ! -e "$path" ]]; then
+  elif [[ ! -e "$sfile" ]]; then
     read "?Server > " chosen
   else
-    chosen="$(echo $(cat "$_path" | fzf) | cut -d ' ' -f 1)"
+    chosen="$(echo $(cat "$sfile" | fzf) | cut -d ' ' -f 1)"
   fi
 
   if [[ -n "$chosen" ]]; then
     if [[ "$chosen" != "$LLC_SERVER" ]]; then
       echo "Resetting Key File\n"
       change-key "" ""
-      touch "$_path"
+      touch "$sfile"
       { 
           echo "$chosen"; 
-          cat "$_path"; 
-      } | sort | uniq > "${_path}.tmp"
-      mv "${_path}.tmp" "$_path"
+          cat "$sfile"; 
+      } | sort | uniq > "${sfile}.tmp"
+      mv "${sfile}.tmp" "$sfile"
       export LLC_SERVER="$chosen"
       sed -i 's|^LLC_SERVER=[^ ]*$|LLC_SERVER='$chosen'|g' "$_secrets"
     fi
@@ -55,11 +55,7 @@ function change-server {
 function change-model {
   local chosen
 
-  if [[ -n "$1" ]]; then
-    chosen="$1"
-  else
-    chosen="$(llcat -u $LLC_SERVER -m | sort | fzf)"
-  fi
+  [[ -n "$1" ]] && chosen="$1" || chosen="$(llcat -u $LLC_SERVER -m | sort | fzf)"
 
   if [[ -n "$chosen" ]]; then
     export LLC_MODEL="$chosen"
@@ -73,11 +69,7 @@ function change-model {
 function change-key {
   local chosen
 
-  if [[ $# -gt 0 ]]; then
-    chosen="${1:-/dev/null}"
-  else
-    read "?Key file > " chosen
-  fi
+  [[ $# -gt 0 ]] && chosen="${1:-/dev/null}" || read "?Key file > " chosen
 
   if [[ -n "$chosen" ]]; then
 
