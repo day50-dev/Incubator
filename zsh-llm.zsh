@@ -22,23 +22,31 @@ function show-llm {
 }
 
 function change-server {
-  local path="${_this_path}servers"
+  local _path="${_this_path}servers"
 
   if [[ -n "$1" ]]; then
     chosen="$1"
   elif [[ ! -e "$path" ]]; then
-    read -p "Server> " chosen
+    read "?Server > " chosen
   else
-    chosen="$(echo $(cat "$path" | fzf) | cut -d ' ' -f 1)"
+    chosen="$(echo $(cat "$_path" | fzf) | cut -d ' ' -f 1)"
   fi
 
   if [[ -n "$chosen" ]]; then
     echo "Setting to $chosen"
-    export LLC_SERVER="$chosen"
-    sed -i 's|^LLC_SERVER=[^ ]*$|LLC_SERVER='$chosen'|g' "$_secrets"
-    touch "$path"
-    { echo "$chosen"; cat "$path"; } | sort | uniq > "${path}.tmp"
-    mv "${path}.tmp" "$path"
+    if [[ "$chosen" != "$LLC_SERVER" ]]; then
+      echo "Resetting keyfile link"
+      touch "$_path"
+      { 
+          echo "$chosen"; 
+          cat "$_path"; 
+      } | sort | uniq > "${_path}.tmp"
+      mv "${_path}.tmp" "$_path"
+      export LLC_SERVER="$chosen"
+      sed -i 's|^LLC_SERVER=[^ ]*$|LLC_SERVER='$chosen'|g' "$_secrets"
+    fi
+  else
+    echo "Fine! Server unchanged!"
   fi
 }
 
@@ -57,11 +65,26 @@ function change-model {
 }
 
 function change-key {
-  chosen="$1"
-  echo "Setting to $chosen"
-  export LLC_KEY_FILE="$chosen"
-  export LLC_KEY="$(< $LLC_KEY_FILE )"
-  sed -i 's|^LLC_KEY_FILE=[^ ]*$|LLC_KEY_FILE='$chosen'|g' "$_secrets"
+  if [[ $# -gt 0 ]]; then
+    chosen="${1:-/dev/null}"
+  else
+    read "?Key file > " chosen
+  fi
+
+  if [[ -n "$chosen" ]]; then
+
+    if [[ ! -e "$chosen" ]]; then
+      echo "\nCan't find that key!\nIt should be a path to file, not a secret.\n"
+      return 1
+    fi
+
+    echo "Setting key to $chosen"
+    export LLC_KEY_FILE="$chosen"
+    export LLC_KEY="$(< $LLC_KEY_FILE )"
+    sed -i 's|^LLC_KEY_FILE=[^ ]*$|LLC_KEY_FILE='$chosen'|g' "$_secrets"
+  else
+    echo "Fine! Key unchanged!"
+  fi
 }
 
 function llc() {
