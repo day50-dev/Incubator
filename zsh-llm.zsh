@@ -95,8 +95,7 @@ function llc() {
 function llm() {
   [[ -n "$LLC_KEY_FILE" ]] && LLC_KEY="$(< $LLC_KEY_FILE )" || LLC_KEY="any"
   if [[ -r "$1" ]]; then
-    CONV="$1" ursh gh:day50-dev/llcat/examples/conversation.sh -u "$LLC_SERVER" -m "
-$LLC_MODEL" -k "$LLC_KEY"
+    CONV="$1" ursh gh:day50-dev/llcat/examples/conversation.sh -u "$LLC_SERVER" -m "$LLC_MODEL" -k "$LLC_KEY"
     exit
   fi
   convo="$(mktemp)"
