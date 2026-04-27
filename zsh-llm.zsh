@@ -14,6 +14,18 @@ fi
 source "$_secrets"
 
 function show-llm {
+  if [[ "$1" == "push" ]]; then
+    echo "pushing to $2"
+    set -x
+    scp "$_secrets" "$2:$_secrets"
+    ssh "$2" "mkdir -p $(dirname "$LLC_KEY_FILE")"
+    scp "$LLC_KEY_FILE" "$2:$LLC_KEY_FILE"
+    set +x
+  elif [[ "$1" == "pull" ]]; then
+    echo "pulling from $2"
+    scp "$2:$_secrets" "$_secrets"
+  fi
+  
   {
     echo "* Model: \`$LLC_MODEL\`"
     echo "* Server: \`$LLC_SERVER\`"
