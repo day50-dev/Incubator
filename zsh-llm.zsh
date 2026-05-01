@@ -99,12 +99,12 @@ function change-key {
   [[ $# -lt 2 ]] && show-llm
 }
 
-function llc() {
+function llm() {
   [[ -n "$LLC_KEY_FILE" ]] && LLC_KEY="$(< $LLC_KEY_FILE )" || LLC_KEY="any"
   llcat -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@"
 }
 
-function llm() {
+function llc() {
   [[ -n "$LLC_KEY_FILE" ]] && LLC_KEY="$(< $LLC_KEY_FILE )" || LLC_KEY="any"
   if [[ -r "$1" ]]; then
     CONV="$1" ursh gh:day50-dev/llcat/examples/conversation.sh -u "$LLC_SERVER" -m "$LLC_MODEL" -k "$LLC_KEY"
