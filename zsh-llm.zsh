@@ -8,9 +8,11 @@ if [[ ! -e "$_secrets" ]]; then
 LLC_MODEL=
 LLC_SERVER=
 LLC_KEY_FILE=
+LLC_TIMEOUT=
 ENDL
 fi
 
+LLC_TIMEOUT=20
 source "$_secrets"
 
 function show-llm {
@@ -30,7 +32,15 @@ function show-llm {
     echo "* Model: \`$LLC_MODEL\`"
     echo "* Server: \`$LLC_SERVER\`"
     echo "* Key File: \`$LLC_KEY_FILE\`"
+    echo "* Timouet: \`$LLC_TIMEOUT\`"
   } | sd
+}
+
+function change-timeout {
+  chosen=$1
+  sed -i 's|^LLC_TIMEOUT=[^ ]*$|LLC_TIMEOUT='$chosen'|g' "$_secrets"
+  echo "Setting timeout to $chosen"
+  export LLC_TIMEOUT="$chosen"
 }
 
 function change-server {
@@ -101,7 +111,7 @@ function change-key {
 
 function llm() {
   [[ -n "$LLC_KEY_FILE" ]] && LLC_KEY="$(< $LLC_KEY_FILE )" || LLC_KEY="any"
-  llcat -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@"
+  llcat --timeout "$LLC_TIMEOUT" -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@"
 }
 
 function llc() {
@@ -112,5 +122,5 @@ function llc() {
   fi
   convo="$(mktemp)"
   echo "Conversation: $convo" > /dev/stderr
-  llcat -c "$convo" -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@" 2> >(jq '.' >&2) | sd
+  llcat --timeout "$LLC_TIMEOUT" -c "$convo" -k "$LLC_KEY" -m "$LLC_MODEL" -u "$LLC_SERVER" "$@" 2> >(jq '.' >&2) | sd
 }
